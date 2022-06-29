@@ -10,12 +10,4 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
-    public function checkToken(){
-        $token = auth()->user();
-
-        if(!$token){
-            return response()->json(['msg'=>'Unauthorised Operation'],401);
-        }
-    }
 }

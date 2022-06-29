@@ -5,26 +5,34 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Systems;
 use Auth;
-
+use Validator;
 class SystemController extends Controller
 {
+    //Get Auth ID
     private function get_user_id(){
         $user = Auth::id();
       
         return response()->json($user);
     }
 
+    //List All Systems System
     public function list_all_sysytems(){
         $all_systems = Systems::paginate(3);
         return $all_systems;
     }
-
+    
+    //List Specific System
     public function list_specific_system(Request $request){
-
-        $this->checkToken();
-
+        $validate = Validator::make($request->all(),
+        ['id'=>'required|integer']);
+        
+        if($validate->fails()){
+            return response()->json($validate->errors(),400);
+        }
         $id = $request['id'];
-        if(is_null($id)){
+        
+        $data = Systems::find($id);
+        if(is_null($data)){
             return response()->json(['msg'=>'Data Not Found'],404);
         }
 
@@ -32,34 +40,70 @@ class SystemController extends Controller
         return response()->json($data,200);
 
     }
+
+    //Update System
     public function update_system(Request $request){
-        $this->checkToken();
+        $validate = Validator::make($request->all(),
+           [ 'system_uptime'=> 'date',
+            'total_ram'=> 'integer',
+            'total_ram'=> 'integer',
+            'allocated_ram'=> 'integer',
+            'total_disk'=> 'integer',
+            'pc_name'=> 'string|min:2',
+                                        ]
+          );
+        if($validate->fails()){
+            return response()->json($validate->errors());
+        }
         $id = $request['id'];
-        if(is_null($id)){
+        
+        $data = Systems::find($id);
+        if(is_null($data)){
             return response()->json(['msg'=>'Data Not Found'],404);
         }
-        $data = Systems::find($id);
+        
         $data->update($request->all());
         return response()->json(['msg'=>'Data Updated'],200);
     }
+
+    //Delete System
     public function delete_system(Request $request){
-        $this->checkToken();
+        $validate = Validator::make($request->all(),
+            ['id'=>'required|integer']
+          );
+        if($validate->fails()){
+            return response()->json($validate->errors(),400);
+        }
         $id = $request['id'];
-        if(is_null($id)){
+        
+        $data = Systems::find($id);
+        if(is_null($data)){
             return response()->json(['msg'=>'Data Not Found'],404);
         }
-        $data = Systems::find($id);
         $data->delete();
         return response()->json(['msg'=>'Data Deleted'],200);
 
         
     }
+
+    //Create System
     public function create_system(Request $request){
         
-        $this->checkToken();
+       
         $user_id = self::get_user_id();
         
-        //Assume validated user input
+       $validate = Validator::make($request->all(),[
+            'system_uptime'=> 'required|date',
+            'total_ram'=> 'required|integer',
+            'total_ram'=> 'required|integer',
+            'allocated_ram'=> 'required|integer',
+            'total_disk'=> 'required|integer',
+            'pc_name'=> 'required|string|min:2',
+       ]);
+
+       if($validate->fails()){
+         return response()->json($validator->errors(), 400);
+       }
         $entry_date = date_create($request['system_uptime']);
         $new_system = [
             'user_id'=>$user_id->original,
@@ -77,8 +121,8 @@ class SystemController extends Controller
         }
 
         return response()->json(['msg'=>'New system created']);
-       
-
-       
+    
     }
+
+   
 }

@@ -2,30 +2,31 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
-
 use Illuminate\Http\Request;
 use Auth;
+use Validator;
+use Illuminate\Support\Facades\Hash;
 
 
 class UserController extends Controller
 {
-
-    
-    protected function returnToken($token){
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => config('jwt.ttl')
-        ]);
-    }
-
-    public function get_user_id(){
-        $user = auth()->user()->id;
+    //Get Auth ID
+    private function get_user_id(){
+        $user = Auth::id();
+      
         return response()->json($user);
     }
-    
+    // Create new user route
     public function create_user(Request $request){
-        //Assume user data validation has been validated
+        $validator = Validator::make($request->all(), [
+            'full_name' => 'required|string|min:2|max:100',
+            'email' => 'required|string|email|max:100|unique:users',
+            'password' => 'required|string|min:6',
+        ]);
+
+        if($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
 
         //get user request body
         $email = $request['email'];
@@ -44,32 +45,56 @@ class UserController extends Controller
 
         }
             //log user in and generate a token
-        $cred = ['email'=>$email, 'password'=>$password];
-        $token = auth()->attempt($cred);
-        if(!$token){
-            return response()->json(['msg'=>'Error Creating user'],400);
+        $mail = ['email'=>$email];
+        $token = $user->createToken('usertoken')->plainTextToken;
+        $response = [
+            'user'=> $mail,
+            'token' => $token
+        ];
 
-        }
-
-        return response()->json(['msg'=>'New User Created',
-                                'token'=> $token],200);
+        return response()->json($response , 201);
+       
 
     }
 
     public function login(Request $request){
-        //assume validated
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:100',
+            'password' => 'required|string|min:6',
+        ]);
+
+        if($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
 
         $cred = ['email'=>$request['email'],
                  'password'=> $request['password']];
-        $token = auth()->attempt($cred);
+        $user = User::where('email', $cred['email'])->first();
 
-        if(!$token){
-            return response()->json(['msg'=>'Invalid User'],400);
+        if(!$user || !Hash::check($cred['password'], $user->password)){
+            return response()->json(['msg'=> 'No user found'],401);
         }
 
-        return response()->json(['token'=> $token],200);
+        
+        $email = ['email'=>$request['email']];
+        $token = $user->createToken('usertoken')->plainTextToken;
+        $response = [
+            'user'=> $email,
+            'token' => $token
+        ];
+
+        return response()->json($response , 201);
         
     }
+
+    public function logout(Request $request){
+        $user_id = self::get_user_id();
+        $id = $user_id->original;
+        $user->tokens()->where('id', $id)->delete();
+        return response()->json(['msg' => 'Logged Out']);
+    }
+
+   
 
 
 }
