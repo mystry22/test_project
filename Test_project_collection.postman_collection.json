@@ -1,0 +1,99 @@
+{
+	"info": {
+		"_postman_id": "5a0438d1-1390-4014-8437-bb5877bac952",
+		"name": "Test_project_collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "login",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"login"
+					]
+				},
+				"description": "Login:\n\nThis enables already registered user's gain access and be able to work with the other routes or endpoint.\n\nwhen user's provide the required credentials a token is generated and user's can make requests to secured endpoint.\n\nSample Generated Token:\n{\n    \"user\": {\n        \"email\": \"henrya@wakanow.com\"\n    },\n    \"token\": \"4|xBjpkHSUTgxMrmz2iHEDX3CxPbYL1N1sdhi4ITOe\"\n}\n\nSample Failed User Auth:\n\n{\n    \"msg\": \"No user found\"\n}\n\nForm Field:\n\n1. email: // valid email required\n2. password: // string data type"
+			},
+			"response": []
+		},
+		{
+			"name": "signup",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null,
+				"description": "Signup:\n\nlike the name implies this enable user's create an account and after get's signed in automatically.\n\nToken's are generated after successful registration which can be stored on the user's computer.\n\nSample Response Success Response:\n\n{\n    \"user\": {\n        \"email\": \"henrya@yahoo.com.bu\"\n    },\n    \"token\": \"5|YRC82c8IOQWUi0NXOf1XfvfFLIOEQkSyOxK8FBlC\"\n}\n\nForm Fields:\n\n1. full_name: // string required\n2. email: // string valid email required\n3. password: // string required"
+			},
+			"response": []
+		},
+		{
+			"name": "create_system",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null,
+				"description": "Create System:\n\nThis end point allows user's Create system requirements and other system information's.\n\nonly user's with the required token will be granted access\n\nSample Success Response:\n\n{\n    \"msg\": \"New system created\"\n}\n\n\n\nForm Fields:\n\n1. system_uptime: // Date required \n2. total_ram: // Integer required\n3. allocated_ram: // Integer required\n4. total_disk: // Integer required\n5. allocated_disk: // Integer required\n6. pc_name: // String required"
+			},
+			"response": []
+		},
+		{
+			"name": "list_specific_system",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null,
+				"description": "list_specific_system:\n\nThis end point returns specific user system information's and accepts a unique id.\n\nonly user's with the required token can make a request to this endpoint\n\nSample Returned Data:\n\n{\n    \"id\": 2,\n    \"user_id\": 2,\n    \"system_uptime\": \"2020-06-06\",\n    \"total_ram\": 9,\n    \"allocated_ram\": 8,\n    \"total_disk\": 400,\n    \"allocated_disk\": 1000,\n    \"created_at\": \"2022-06-26T18:36:57.000000Z\",\n    \"updated_at\": \"2022-06-26T18:36:57.000000Z\"\n}\n\n\n\nForm Fields:\n\n1. id: // Integer required"
+			},
+			"response": []
+		},
+		{
+			"name": "update_system",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null,
+				"description": "update_system:\n\nThis end point allows user's Update system system information's.\n\nonly user's with the required token will be granted access\n\nSample Success Response:\n\n{\n    \"msg\": \"Data Updated\"\n}\n\n\n\nForm Fields:\n\n1. id: // Integer required"
+			},
+			"response": []
+		},
+		{
+			"name": "delete_system",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null,
+				"description": "delete_system:\n\nThis end point allows user's Delete system system information's.\n\nonly user's with the required token will be granted access\n\nSample Success Response:\n\n{\n    \"msg\": \"Data Deleted\"\n}\n\n\n\nForm Fields:\n\n1. id: // Integer required"
+			},
+			"response": []
+		},
+		{
+			"name": "list_all_sysytems",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null,
+				"description": "list_all_sysytems:\n\nThis end list's all system system information's and supports pagination.\n\n\nSample Success Response:\n{\n    \"current_page\": 1,\n    \"data\": [\n        {\n            \"id\": 1,\n            \"user_id\": 1,\n            \"system_uptime\": \"2020-06-06\",\n            \"total_ram\": 9,\n            \"allocated_ram\": 8,\n            \"total_disk\": 400,\n            \"allocated_disk\": 1000,\n            \"pc_name\": \"Dell E7250\",\n            \"created_at\": \"2022-06-26T19:35:05.000000Z\",\n            \"updated_at\": \"2022-06-26T19:35:05.000000Z\"\n        },\n        {\n            \"id\": 2,\n            \"user_id\": 1,\n            \"system_uptime\": \"2020-06-09\",\n            \"total_ram\": 9,\n            \"allocated_ram\": 6,\n            \"total_disk\": 356,\n            \"allocated_disk\": 1000,\n            \"pc_name\": \"Dell e345\",\n            \"created_at\": \"2022-06-26T19:35:56.000000Z\",\n            \"updated_at\": \"2022-06-26T19:35:56.000000Z\"\n        },\n        {\n            \"id\": 3,\n            \"user_id\": 1,\n            \"system_uptime\": \"2020-06-09\",\n            \"total_ram\": 9,\n            \"allocated_ram\": 6,\n            \"total_disk\": 356,\n            \"allocated_disk\": 1000,\n            \"pc_name\": \"Dell big345\",\n            \"created_at\": \"2022-06-26T19:46:52.000000Z\",\n            \"updated_at\": \"2022-06-26T19:46:52.000000Z\"\n        }\n    ],\n    \"first_page_url\": \"http://localhost:8000/api/list_all_sysytems?page=1\",\n    \"from\": 1,\n    \"last_page\": 2,\n    \"last_page_url\": \"http://localhost:8000/api/list_all_sysytems?page=2\",\n    \"links\": [\n        {\n            \"url\": null,\n            \"label\": \"&laquo; Previous\",\n            \"active\": false\n        },\n        {\n            \"url\": \"http://localhost:8000/api/list_all_sysytems?page=1\",\n            \"label\": \"1\",\n            \"active\": true\n        },\n        {\n            \"url\": \"http://localhost:8000/api/list_all_sysytems?page=2\",\n            \"label\": \"2\",\n            \"active\": false\n        },\n        {\n            \"url\": \"http://localhost:8000/api/list_all_sysytems?page=2\",\n            \"label\": \"Next &raquo;\",\n            \"active\": false\n        }\n    ],\n    \"next_page_url\": \"http://localhost:8000/api/list_all_sysytems?page=2\",\n    \"path\": \"http://localhost:8000/api/list_all_sysytems\",\n    \"per_page\": 3,\n    \"prev_page_url\": null,\n    \"to\": 3,\n    \"total\": 6\n}"
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		}
+	]
+}
